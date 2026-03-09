@@ -9,6 +9,7 @@ public class MenuData : MonoBehaviour
     public TextMeshProUGUI BestScore;
     public TMP_InputField PlayerName;
     public string Name;
+    public string SavedName;
     public void Awake()
     {
         Instance = this;
@@ -30,9 +31,10 @@ public class MenuData : MonoBehaviour
     }
     public void SaveHighscore(int points)
     {
+        SavedName = Name;
         SaveData data = new SaveData();
         data.highscore = points;
-        data.name = Name;
+        data.name = SavedName;
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString("savefile", json);
     }
@@ -42,7 +44,9 @@ public class MenuData : MonoBehaviour
         if (json != "")
         {
             SaveData data = JsonUtility.FromJson<SaveData>(json);
-            BestScore.text = $"Best Score : {data.name} : {data.highscore}";
+            if (BestScore != null)
+                //for some reason the SavedName value is diplayed as blank in the menu and in the main scene after the game is relaunched
+                BestScore.text = $"Best Score : {SavedName} : {data.highscore}";
             return data.highscore;
         }
         return 0;

@@ -36,6 +36,7 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        HighScoreText.text = $"Best Score : {MenuData.Instance.SavedName} : {MenuData.Instance.LoadHighscore()}";
     }
 
     private void Update()
@@ -60,7 +61,6 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
-        HighScoreText.text = $"Best Score : {MenuData.Instance.Name} : {MenuData.Instance.LoadHighscore()}";
     }
 
     void AddPoint(int point)
@@ -73,6 +73,7 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        MenuData.Instance.SaveHighscore(m_Points);
+        if (m_Points > MenuData.Instance.LoadHighscore())
+            MenuData.Instance.SaveHighscore(m_Points);
     }
 }
