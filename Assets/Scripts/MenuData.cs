@@ -18,7 +18,7 @@ public class MenuData : MonoBehaviour
     }
     private void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 0)
+        if (SceneManager.GetActiveScene().buildIndex == 0 && PlayerName != null)
         {
            Name = PlayerName.text;
         }
@@ -31,24 +31,27 @@ public class MenuData : MonoBehaviour
     }
     public void SaveHighscore(int points)
     {
-        SavedName = Name;
+        SavedName = Name ?? "";
         SaveData data = new SaveData();
         data.highscore = points;
         data.name = SavedName;
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString("savefile", json);
+        PlayerPrefs.Save();
     }
     public int LoadHighscore()
     {
         string json = PlayerPrefs.GetString("savefile", "");
-        if (json != "")
+        if (!string.IsNullOrEmpty(json))
         {
             SaveData data = JsonUtility.FromJson<SaveData>(json);
+            SavedName = data.name ?? "";
             if (BestScore != null)
                 //for some reason the SavedName value is diplayed as blank in the menu and in the main scene after the game is relaunched
                 BestScore.text = $"Best Score : {SavedName} : {data.highscore}";
             return data.highscore;
         }
+        SavedName = "";
         return 0;
     }
 }
